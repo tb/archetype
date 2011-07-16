@@ -12,14 +12,14 @@ module Archetype
         Registry.archetypes[name.to_s] = block
       end
 
-      def archetype(name)
-        raise "archetypes is nil" if Registry.archetypes.nil?
+      def archetype(*names)
+        Array(names).each do |name|
+          archetype = Registry.archetypes[name.to_s]
+          raise "Archetype '#{name.to_s}' not found!" if archetype.nil?
+          raise "No block given for archetype '#{name}'!" if archetype.class != Proc
 
-        archetype = Registry.archetypes[name.to_s]
-        raise "Archetype '#{name.to_s}' not found!" if archetype.nil?
-        raise "No block given for archetype '#{name}'!" if archetype.class != Proc
-
-        class_exec &archetype
+          class_exec &archetype
+	end
       end
     end
 
